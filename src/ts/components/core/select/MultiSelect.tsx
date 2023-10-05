@@ -27,6 +27,8 @@ const MultiSelect = (props: Props) => {
     const {
         setProps,
         data,
+        value,
+        initiallyOpened,
         persistence,
         persisted_props,
         persistence_type,
@@ -35,14 +37,30 @@ const MultiSelect = (props: Props) => {
     } = props;
 
     const [options, setOptions] = useState(data);
+    const [selections, setSelections] = useState(value);
     const [searchVal, onSearchValChange] = useState(searchValue);
+    const [dropdownOpened, setDropdownOpened] = useState(initiallyOpened);
 
     useDidUpdate(() => {
         setOptions(data);
     }, [data]);
 
+    const onClose = () => {
+        console.log("change");
+        console.log(selections);
+        setProps({ value: selections });
+        setDropdownOpened(false)
+    };
+
+    const onOpen = () => {
+        setDropdownOpened(true)
+    }
+
     const onChange = (value: string[]) => {
-        setProps({ value });
+        if (!dropdownOpened){
+            setProps({ value });
+        }
+        setSelections(value);
     };
 
     const onSearchChange = (value: string) => {
@@ -53,7 +71,9 @@ const MultiSelect = (props: Props) => {
     return (
         <MantineMultiSelect
             onChange={onChange}
-            getCreateLabel={(query) => `+ Create ${query}`}
+            onDropdownClose={onClose}
+            onDropdownOpen={onOpen}
+            getCreateLabel={(query) => `includes:${query}`}
             onCreate={(query) => {
                 const item = { value: query, label: query };
                 const newOptions = [...options, item];
