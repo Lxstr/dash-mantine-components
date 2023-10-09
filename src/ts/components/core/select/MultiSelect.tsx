@@ -49,15 +49,15 @@ const MultiSelect = (props: Props) => {
         console.log("change");
         console.log(selections);
         setProps({ value: selections });
-        setDropdownOpened(false)
+        setDropdownOpened(false);
     };
 
     const onOpen = () => {
-        setDropdownOpened(true)
-    }
+        setDropdownOpened(true);
+    };
 
     const onChange = (value: string[]) => {
-        if (!dropdownOpened){
+        if (!dropdownOpened) {
             setProps({ value });
         }
         setSelections(value);
@@ -75,7 +75,7 @@ const MultiSelect = (props: Props) => {
             onDropdownOpen={onOpen}
             getCreateLabel={(query) => `includes:${query}`}
             onCreate={(query) => {
-                const item = { value: query, label: query };
+                const item = { value: `includes:${query}`, label: query };
                 const newOptions = [...options, item];
                 setProps({ data: newOptions });
                 return item;
