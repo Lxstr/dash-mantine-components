@@ -16,6 +16,8 @@ type Props = {
     maxSelectedValues?: number;
     /** Controlled input value */
     value?: string[];
+    /** Update value on dropdown close */
+    updateOnClose?: boolean;
 } & SelectSharedProps &
     PersistenceProps &
     DefaultProps;
@@ -33,6 +35,7 @@ const MultiSelect = (props: Props) => {
         persisted_props,
         persistence_type,
         searchValue,
+        updateOnClose,
         ...other
     } = props;
 
@@ -46,9 +49,9 @@ const MultiSelect = (props: Props) => {
     }, [data]);
 
     const onClose = () => {
-        console.log("change");
-        console.log(selections);
-        setProps({ value: selections });
+        if (updateOnClose) {
+            setProps({ value: selections });
+        }
         setDropdownOpened(false)
     };
 
@@ -57,7 +60,7 @@ const MultiSelect = (props: Props) => {
     }
 
     const onChange = (value: string[]) => {
-        if (!dropdownOpened){
+        if (!dropdownOpened && updateOnClose){
             setProps({ value });
         }
         setSelections(value);
@@ -73,7 +76,7 @@ const MultiSelect = (props: Props) => {
             onChange={onChange}
             onDropdownClose={onClose}
             onDropdownOpen={onOpen}
-            getCreateLabel={(query) => `includes:${query}`}
+            getCreateLabel={(query) => `+ Create ${query}`}
             onCreate={(query) => {
                 const item = { value: query, label: query };
                 const newOptions = [...options, item];
